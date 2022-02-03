@@ -5,13 +5,14 @@ const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     channelSecret: process.env.CHANNEL_SECRET,
 };
+// console.log(config);
 const client = new line.Client(config);
 const app = express();
 
 app.get('/', (req, res) => {
     res.sendStatus(404);
 });
-app.get('/', line.middleware(config), (req, res) => {
+app.post('/', line.middleware(config), (req, res) => {
     Promise
         .all(req.body.events.map(mainProgram))
         .then((result) => res.json(result))
