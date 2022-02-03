@@ -44,7 +44,7 @@ const mainProgram = async(event) => {
         return Promise.resolve(null); //abaikan pesan
     }
 
-    const args = event.message.text.substring(' ');
+    const args = event.message.text.substring(1).split(' ');
     if (args.length == 0) {
         return Promise.resolve(null); //abaikan pesan
     }
