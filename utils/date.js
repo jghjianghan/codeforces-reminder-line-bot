@@ -18,17 +18,17 @@ const secondsToDurationString = (seconds) => {
     let timeToken = [];
 
     if (days > 0) {
-        str.push(days + " day" + (days > 1 ? "s" : ""));
+        timeToken.push(days + " day" + (days > 1 ? "s" : ""));
     }
 
     if (hours > 0) {
-        str.push(hours + " hour" + (hours > 1 ? "s" : ""));
+        timeToken.push(hours + " hour" + (hours > 1 ? "s" : ""));
     }
     if (minutes > 0) {
-        str.push(minutes + " minute" + (minutes > 1 ? "s" : ""));
+        timeToken.push(minutes + " minute" + (minutes > 1 ? "s" : ""));
     }
 
-    return str.join(" ");
+    return timeToken.join(" ");
 }
 
 module.exports = { epochToDateTimeString, secondsToDurationString };
