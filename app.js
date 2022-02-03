@@ -18,6 +18,7 @@ const commandList = {
     'now': require('./commands/now'),
     'past': require('./commands/past'),
     'rc': require('./commands/rc'),
+    'about': require('./commands/about'),
 };
 
 
@@ -61,6 +62,15 @@ const mainProgram = async(event) => {
             }
         }
         return client.replyMessage(event.replyToken, { type: 'text', text: text });
+    } else if (cmd === 'leave') {
+        if (event.source.type === 'group') {
+            return client.leaveGroup(event.source.groupId);
+        } else if (event.source.type === 'room') {
+            await client.replyMessage(event.replyToken, { type: 'text', text: "Goodbye" });
+            return client.leaveRoom(event.source.roomId);
+        } else {
+            return Promise.resolve(null);
+        }
     } else if (cmd in commandList) {
         return client.replyMessage(event.replyToken, { type: 'text', text: await (commandList[cmd].handler(args)) });
     } else {
