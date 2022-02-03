@@ -5,9 +5,26 @@ const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     channelSecret: process.env.CHANNEL_SECRET,
 };
-// console.log(config);
+
 const client = new line.Client(config);
 const app = express();
+
+const commandList = {
+    'help': {
+        description: "Display list of available commands"
+    },
+    'next': require('./commands/next'),
+    'now': {
+        description: "Lists all ongoing contests"
+    },
+    'past': {
+        description: "Display the last 3 contest"
+    },
+    'rc': {
+        description: "Display the last 5 rating change for an user"
+    },
+};
+
 
 app.get('/', (req, res) => {
     res.sendStatus(404);
@@ -17,15 +34,27 @@ app.post('/', line.middleware(config), (req, res) => {
         .all(req.body.events.map(mainProgram))
         .then((result) => res.json(result))
         .catch((error) => {
+            res.status(500);
             console.error(`Promise error ${error}`);
         });
 });
 
-const mainProgram = (event) => {
-    if (event.type !== 'message' || event.message.type !== 'text') { //jika user tidak mengirimkan pesan berupa teks (bukan gambar, lokasi, atau sejenisnya)
+const mainProgram = async(event) => {
+    if (event.type !== 'message' || event.message.type !== 'text' || event.message.text[0] !== '/') { //event bukan command
         return Promise.resolve(null); //abaikan pesan
     }
-    return client.replyMessage(event.replyToken, { type: 'text', text: 'Hello, world' }); //balas dengan pesan "Hello, world"
+
+    const args = event.message.text.substring(' ');
+    if (args.length == 0) {
+        return Promise.resolve(null); //abaikan pesan
+    }
+    const cmd = args.shift();
+
+    if (cmd in commandList) {
+        return client.replyMessage(event.replyToken, { type: 'text', text: await (commandList[cmd].handler(args)) });
+    } else {
+        return client.replyMessage(event.replyToken, { type: 'text', text: "Invalid command" });
+    }
 }
 
 const port = process.env.PORT || 3000;
