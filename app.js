@@ -51,8 +51,8 @@ const mainProgram = async(event) => {
         let text = "";
         if (args.length == 0) {
             text = `Command lists:`;
-            for (command of commandList) {
-                text += `\n\nUsage: ${command.usage}\n${command.description}`;
+            for (keyword in commandList) {
+                text += `\n\n${commandList[keyword].usage}\n${commandList[keyword].description}`;
             }
         } else {
             const keyword = args[0];
