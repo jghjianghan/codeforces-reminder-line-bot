@@ -28,7 +28,7 @@ const mainProgram = (event) => {
     return client.replyMessage(event.replyToken, { type: 'text', text: 'Hello, world' }); //balas dengan pesan "Hello, world"
 }
 
-const port = process.env.PORT || 443;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`app running in port ${port}...`);
 })
