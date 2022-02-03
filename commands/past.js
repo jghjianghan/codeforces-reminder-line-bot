@@ -12,29 +12,26 @@ const handler = (args) => {
         .then((response) => {
             // handle success
             const data = response.data;
-            if (data.status === "OK") {
-                const validPhases = ["PENDING_SYSTEM_TEST", "SYSTEM_TEST", "FINISHED"];
-                const contests = [];
-                for (contest of data.result) {
-                    if (validPhases.includes(contest.phase)) {
-                        contests.push(contestToString(contest))
-                    }
-                    if (contests.length >= 3) //store up to 3 past contests
-                        break;
+
+            const validPhases = ["PENDING_SYSTEM_TEST", "SYSTEM_TEST", "FINISHED"];
+            const contests = [];
+            for (contest of data.result) {
+                if (validPhases.includes(contest.phase)) {
+                    contests.push(contestToString(contest))
                 }
-                if (contests.length == 0) {
-                    return "No past contests!";
-                } else {
-                    return contests.join("\n===============\n");
-                }
+                if (contests.length >= 3) //store up to 3 past contests
+                    break;
+            }
+            if (contests.length == 0) {
+                return "No past contests!";
             } else {
-                console.log("Past contest fetch error: ", error);
-                return data.comment;
+                return contests.join("\n===============\n");
             }
         })
         .catch((error) => {
             // handle error
             console.log("Past contest fetch error: ", error);
+            console.log("Error: ", error.response.data.comment);
         })
 };
 

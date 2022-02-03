@@ -12,27 +12,24 @@ const handler = (args) => {
         .then((response) => {
             // handle success
             const data = response.data;
-            if (data.status === "OK") {
-                const contests = [];
-                for (contest of data.result) {
-                    if (contest.phase !== "BEFORE") {
-                        break;
-                    }
-                    contests.push(contestToString(contest))
+            const contests = [];
+            for (contest of data.result) {
+                if (contest.phase !== "BEFORE") {
+                    break;
                 }
-                if (contests.length == 0) {
-                    return "No upcoming contests!";
-                } else {
-                    contests.reverse();
-                    return contests.join("\n===============\n");
-                }
+                contests.push(contestToString(contest))
+            }
+            if (contests.length == 0) {
+                return "No upcoming contests!";
             } else {
-                return data.comment;
+                contests.reverse();
+                return contests.join("\n===============\n");
             }
         })
         .catch((error) => {
             // handle error
-            console.log("Upcoming contest fetch error: ", error);
+            console.log("Upcoming contest fetch error: ", error.response.data.comment);
+            return "Error: " + error.response.data.comment;
         })
 };
 

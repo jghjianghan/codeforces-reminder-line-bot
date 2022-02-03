@@ -12,28 +12,25 @@ const handler = (args) => {
         .then((response) => {
             // handle success
             const data = response.data;
-            if (data.status === "OK") {
-                const contests = [];
-                for (contest of data.result) {
-                    if (contest.phase === "FINISHED") {
-                        break;
-                    } else if (contest.phase === "CODING") {
-                        contests.push(contestToString(contest))
-                    }
+            const contests = [];
+            for (contest of data.result) {
+                if (contest.phase === "FINISHED") {
+                    break;
+                } else if (contest.phase === "CODING") {
+                    contests.push(contestToString(contest))
                 }
-                if (contests.length == 0) {
-                    return "No ongoing contests!";
-                } else {
-                    contests.reverse();
-                    return contests.join("\n===============\n");
-                }
+            }
+            if (contests.length == 0) {
+                return "No ongoing contests!";
             } else {
-                return data.comment;
+                contests.reverse();
+                return contests.join("\n===============\n");
             }
         })
         .catch((error) => {
             // handle error
             console.log("Ongoing contest fetch error: ", error);
+            return "Error: " + error.response.data.comment;
         })
 };
 

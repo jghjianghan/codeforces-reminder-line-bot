@@ -8,33 +8,29 @@ const { epochToDateTimeString } = require('../utils/date');
  */
 const handler = (args) => {
     if (args.length < 1) {
-        return "Missing user handle"
+        return "Error: Missing user handle. Command format should be:\n\n/rc <user-handle>"
     }
     const userHandle = args[0];
     return axios.get('https://codeforces.com/api/user.rating?handle=' + userHandle)
         .then((response) => {
             // handle success
             const data = response.data;
-            if (data.status === "OK") {
-                const changes = data.result.slice(-5, data.result.length).map(change => {
-                    const ratingChange = change.newRating - change.oldRating;
-                    let ratingChangeLabel = (ratingChange >= 0 ? "+" : "") + ratingChange;
-                    return `${change.contestName}\nRank ${change.rank}\n*${change.oldRating} --> ${change.newRating}* (${ratingChangeLabel})\nUpdate time: ${epochToDateTimeString(change.ratingUpdateTimeSeconds)}`
-                });
+            const changes = data.result.slice(-5, data.result.length).map(change => {
+                const ratingChange = change.newRating - change.oldRating;
+                let ratingChangeLabel = (ratingChange >= 0 ? "+" : "") + ratingChange;
+                return `${change.contestName}\nRank ${change.rank}\n*${change.oldRating} --> ${change.newRating}* (${ratingChangeLabel})\nUpdate time: ${epochToDateTimeString(change.ratingUpdateTimeSeconds)}`
+            });
 
-                if (changes.length == 0) {
-                    return "No rating change!";
-                } else {
-                    changes.reverse();
-                    return `Rating change for ${userHandle}:\n${changes.join("\n===============\n")}`;
-                }
+            if (changes.length == 0) {
+                return "No rating change!";
             } else {
-                return data.comment;
+                changes.reverse();
+                return `Rating change for ${userHandle}:\n${changes.join("\n===============\n")}`;
             }
         })
         .catch((error) => {
             // handle error
-            console.log("Error on user rating change: ", error);
+            return "Error: " + error.response.data.comment;
         })
 };
 
