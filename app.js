@@ -17,9 +17,7 @@ const commandList = {
     'next': require('./commands/next'),
     'now': require('./commands/now'),
     'past': require('./commands/past'),
-    'rc': {
-        description: "Display the last 5 rating change for an user"
-    },
+    'rc': require('./commands/rc'),
 };
 
 

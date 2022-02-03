@@ -27,8 +27,7 @@ const handler = (args) => {
                     return contests.join("\n===============\n");
                 }
             } else {
-                console.log("Upcoming contest fetch error: ", error);
-                return "Error! Please contact the developer: ";
+                return data.comment;
             }
         })
         .catch((error) => {

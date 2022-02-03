@@ -5,7 +5,7 @@ const { contestToString } = require("../utils/contest");
  * Fetches the past 3 contests in Codeforces and describe them in human readable string.
  * Past contests are contests whose phase is either PENDING_SYSTEM_TEST, SYSTEM_TEST, or FINISHED as described in the API docs
  * @param {Array} args Array of command arguments
- * @returns Promise resolving human-readable string describing the current ongoing contests
+ * @returns Promise resolving human-readable string describing the past contests
  */
 const handler = (args) => {
     return axios.get('https://codeforces.com/api/contest.list')
@@ -29,7 +29,7 @@ const handler = (args) => {
                 }
             } else {
                 console.log("Past contest fetch error: ", error);
-                return "Error! Please contact the developer: ";
+                return data.comment;
             }
         })
         .catch((error) => {
