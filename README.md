@@ -20,4 +20,24 @@ The chatbot will respond to several commands that starts with `/`. Here are the 
 - `/now` : Lists all ongoing contests
 - `/past` : Lists up to 3 recently past contests
 - `/rc <user-handle>` : Gets the last 5 rating change for a user given the user handle
+- `/about` : Show information about this project
 - `/leave` : Asks the chatbot to leave the group or multichat
+
+# Setup
+You need Node.js to run this project. After the repository is cloned, initialize the project with NPM:
+```
+npm init
+```
+The entrypoint of the app is app.js, so you can run the project with:
+```
+node app
+```
+or
+```
+npm start
+```
+
+# Sample Interaction
+![CFBot-demo](https://user-images.githubusercontent.com/47552445/152547190-94565b4c-e288-4241-b8d2-8c3a6e06cb06.jpg)
+
+
