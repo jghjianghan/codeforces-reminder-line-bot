@@ -14,6 +14,10 @@ const commandList = {
         usage: "/help OR /help <command>",
         description: "Display the syntax and description of all commands or a specific command",
     },
+    'leave': {
+        usage: "/leave",
+        description: "Asks the chatbot to leave the group/multichat where the command was sent",
+    },
     'next': require('./commands/next'),
     'now': require('./commands/now'),
     'past': require('./commands/past'),
