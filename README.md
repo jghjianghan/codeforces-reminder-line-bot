@@ -1,5 +1,5 @@
 # Codeforces Reminder Line Bot
-A Node.js web server for a Line chatbot (channel) that gives information about contests.
+A Node.js web server for a Line chatbot (channel) that gives information about contests. The base template for the project is inspired by the tutorial on https://medium.com/@marfgold1/cara-membuat-line-chatbot-dengan-node-js-b53276fadf8
 
 # Background
 ## Purpose
