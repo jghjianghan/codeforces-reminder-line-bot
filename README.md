@@ -38,6 +38,4 @@ npm start
 ```
 
 # Sample Interaction
-![CFBot-demo](https://user-images.githubusercontent.com/47552445/152547190-94565b4c-e288-4241-b8d2-8c3a6e06cb06.jpg)
-
-
+![CFBot-demo sideway](https://user-images.githubusercontent.com/47552445/152628815-e88fde91-6275-4457-add3-ced6159fdc7a.jpg)
