@@ -1,5 +1,7 @@
 const line = require('@line/bot-sdk');
 const express = require('express');
+const bodyParser = require('body-parser');
+require('dotenv').config()
 
 const config = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -8,6 +10,7 @@ const config = {
 
 const client = new line.Client(config);
 const app = express();
+app.use(bodyParser.text());
 
 const commandList = {
     'help': {
@@ -81,6 +84,18 @@ const mainProgram = async(event) => {
         return client.replyMessage(event.replyToken, { type: 'text', text: "Invalid command" });
     }
 }
+
+app.post('/ping', (req, res) => {
+    if (req.body === process.env.API_SECRET) {
+        client.pushMessage(process.env.MY_UID, { type: 'text', text: "Your experiment is done!" })
+            .then(res.sendStatus(200))
+            .catch((err) => {
+                res.sendStatus(500);
+            })
+    } else {
+        res.sendStatus(403);
+    }
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
