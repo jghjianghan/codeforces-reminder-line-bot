@@ -3,7 +3,7 @@
   "short_name": "疫情动态",
   "theme_color": "#076e83",
   "background_color": "#002a88",
-  "display": "minimal-ui",
+  "display": "standalone",
   "orientation": "portrait",
   "scope": "/covid/",
   "start_url": "/covid/",
