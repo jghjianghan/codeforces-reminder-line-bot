@@ -11,6 +11,7 @@ const config = {
 const client = new line.Client(config);
 const app = express();
 app.use(bodyParser.text());
+app.use(express.static('public'))
 
 const commandList = {
     'help': {

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#034985">
+
+    <title>疫情动态</title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            margin: auto;
+            width: 100%;
+        }
+
+        html,
+        body {
+            margin: 0px;
+        }
+
+        article,
+        footer {
+            margin: 8px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: small;
+            color: gray;
+        }
+
+        footer div {
+            margin: 1em;
+        }
+
+        nav {
+            background: rgb(0, 42, 136);
+            background: linear-gradient(197deg, rgba(0, 42, 136, 1) 0%, rgba(7, 110, 131, 1) 100%);
+            color: #f2f2f2;
+            box-shadow: 0px 1px 5px #888888;
+        }
+
+        nav h1 {
+            margin: 0;
+            padding: 0.8em;
+            font-size: 1.7em;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        td {
+            text-align: right;
+        }
+
+        td:first-child {
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        th,
+        td {
+            padding: 0.6em 0.8em;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid rgba(163, 163, 163, 0.596);
+            border-collapse: collapse;
+        }
+
+        @media only screen and (min-width: 768px) {
+            table {
+                width: auto;
+                min-width: 25em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <h1>新冠肺炎动态</h1>
+    </nav>
+    <article>
+
+        <h2>新增确诊</h2>
+        <table id="new-cases">
+            <tr>
+                <th>日期</th>
+                <th>中国</th>
+                <th>印尼</th>
+                <th>新加坡</th>
+            </tr>
+        </table>
+
+        <br />
+        <h2>死亡</h2>
+        <table id="deaths">
+            <tr>
+                <th>日期</th>
+                <th>中国</th>
+                <th>印尼</th>
+                <th>新加坡</th>
+            </tr>
+        </table>
+    </article>
+    <br />
+    <footer>
+        <hr>
+        <div>
+            数据来源：<a href="https://github.com/CSSEGISandData/COVID-19" target="_blank">JHU CSSE COVID-19 Data</a> 通过 <a
+                href="https://disease.sh/" target="_blank">disease.sh</a> 存取
+            <br>
+            由江晗创建
+        </div>
+    </footer>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
+    </script>
+
+    <script src="date.js"></script>
+    <script>
+        /**
+         * @param arr Array of cases (new, recovered, or deaths)
+         * @return The array of the difference between consecutive dates
+         */
+        function hitungSelisih(arr) {
+            let diff = [];
+            let n = arr.length;
+            if (n == 1) {
+                diff.push(0);
+            } else {
+                for (let i = 1; i < n; i++) {
+                    diff.push(arr[i] - arr[i - 1]);
+                }
+            }
+            return diff;
+        }
+
+        function populate(table, countriesData) {
+            const countryNames = ['China', 'Indonesia', 'Singapore'];
+
+            const rowData = {};
+
+            for (let country of countryNames) {
+                const srcData = countriesData[country];
+
+                const data = [];
+
+                for (let dateString in srcData) {
+                    const date = Date.parse(dateString).toString("yyyy-MM-dd");
+                    data.push([date, srcData[dateString]]);
+                }
+
+                data.sort((p1, p2) => p1[0].localeCompare(p2[0]))
+                const diff = hitungSelisih(data.map(pair => pair[1]));
+                data.shift();
+
+                for (let i in data) {
+                    const date = data[i][0];
+                    if (!rowData[date]) {
+                        rowData[date] = {};
+                    }
+                    rowData[date][country] = diff[i];
+                }
+            }
+
+            Object.keys(rowData).sort((d1, d2) => -d1.localeCompare(d2))
+                .forEach(date => {
+                    const row = document.createElement("tr");
+                    let col = document.createElement("td");
+                    col.textContent = date;
+                    row.appendChild(col)
+
+                    for (let country of countryNames) {
+                        col = document.createElement("td");
+                        col.textContent = rowData[date][country];
+                        row.appendChild(col)
+                    }
+                    table.appendChild(row);
+                })
+        }
+
+        let tableNew = document.getElementById("new-cases");
+        let tableDeath = document.getElementById("deaths");
+
+        fetch('https://disease.sh/v3/covid-19/historical/CHN%2CIDN%2CSGP?lastdays=15')
+            .then(response => response.json())
+            .then(data => {
+                casesData = {}
+                deathsData = {}
+                recoveredData = {}
+                for (let country of data) {
+                    casesData[country.country] = country.timeline.cases
+                    deathsData[country.country] = country.timeline.deaths;
+                    recoveredData[country.country] = country.timeline.cases
+                }
+
+                populate(tableNew, casesData);
+                populate(tableDeath, deathsData);
+            })
+
+
+    </script>
+
+</body>
+
+</html>
