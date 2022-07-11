@@ -97,8 +97,7 @@
         <h1>新冠肺炎动态</h1>
     </nav>
     <article>
-
-        <h2>新增确诊</h2>
+        <h2>需留意国家新增确诊</h2>
         <table id="new-cases">
             <tr>
                 <th>日期</th>
@@ -109,13 +108,14 @@
         </table>
 
         <br />
-        <h2>死亡</h2>
-        <table id="deaths">
+        <h2>全球新增确诊</h2>
+        <table id="global-cases">
             <tr>
-                <th>日期</th>
-                <th>中国</th>
-                <th>印尼</th>
-                <th>新加坡</th>
+                <th>地区</th>
+                <th>新增确诊</th>
+                <th>累计确诊</th>
+                <th>治愈</th>
+                <th>死亡</th>
             </tr>
         </table>
     </article>
@@ -123,8 +123,9 @@
     <footer>
         <hr>
         <div>
-            数据来源：<a href="https://github.com/CSSEGISandData/COVID-19" target="_blank">JHU CSSE COVID-19 Data</a> 通过 <a
-                href="https://disease.sh/" target="_blank">disease.sh</a> 存取
+            数据来源：<a href="https://github.com/CSSEGISandData/COVID-19" target="_blank">JHU CSSE COVID-19 Data</a> 与 <a
+                href="https://www.worldometers.info/coronavirus/" target="_blank" rel="noopener noreferrer">Worldometer
+                Coronavirus</a> 通过 <a href="https://disease.sh/" target="_blank">disease.sh</a> 存取
             <br>
             由江晗创建
         </div>
@@ -137,6 +138,8 @@
     </script>
 
     <script src="date.js"></script>
+    <script src="isoToChn.js"></script>
+
     <script>
         /**
          * @param arr Array of cases (new, recovered, or deaths)
@@ -155,7 +158,13 @@
             return diff;
         }
 
-        function populate(table, countriesData) {
+        function create_td(textContent) {
+            const col = document.createElement("td");
+            col.textContent = textContent;
+            return col;
+        }
+
+        function populateTimeSeries(table, countriesData) {
             const countryNames = ['China', 'Indonesia', 'Singapore'];
 
             const rowData = {};
@@ -186,41 +195,52 @@
             Object.keys(rowData).sort((d1, d2) => -d1.localeCompare(d2))
                 .forEach(date => {
                     const row = document.createElement("tr");
-                    let col = document.createElement("td");
-                    col.textContent = date;
-                    row.appendChild(col)
+                    row.appendChild(create_td(date))
 
                     for (let country of countryNames) {
-                        col = document.createElement("td");
-                        col.textContent = rowData[date][country];
-                        row.appendChild(col)
+                        row.appendChild(create_td(rowData[date][country]))
                     }
                     table.appendChild(row);
                 })
         }
 
         let tableNew = document.getElementById("new-cases");
-        let tableDeath = document.getElementById("deaths");
+        // let tableDeath = document.getElementById("deaths");
 
         fetch('https://disease.sh/v3/covid-19/historical/CHN%2CIDN%2CSGP?lastdays=15')
             .then(response => response.json())
             .then(data => {
                 casesData = {}
-                deathsData = {}
-                recoveredData = {}
+                // deathsData = {}
+                // recoveredData = {}
                 for (let country of data) {
                     casesData[country.country] = country.timeline.cases
-                    deathsData[country.country] = country.timeline.deaths;
-                    recoveredData[country.country] = country.timeline.cases
+                    // deathsData[country.country] = country.timeline.deaths;
+                    // recoveredData[country.country] = country.timeline.cases
                 }
 
-                populate(tableNew, casesData);
-                populate(tableDeath, deathsData);
+                populateTimeSeries(tableNew, casesData);
+                // populateTimeSeries(tableDeath, deathsData);
             })
 
+        function populateGlobal(table, data) {
+            for (let countryData of data) {
+                const row = document.createElement("tr");
 
+                row.appendChild(create_td(isoToChn[countryData.countryInfo.iso2]))
+                row.appendChild(create_td(countryData.todayCases))
+                row.appendChild(create_td(countryData.cases))
+                row.appendChild(create_td(countryData.recovered))
+                row.appendChild(create_td(countryData.deaths))
+
+                table.appendChild(row)
+            }
+        }
+
+        fetch('https://disease.sh/v3/covid-19/countries?yesterday=true&twoDaysAgo=true&sort=todayCases')
+            .then(response => response.json())
+            .then(data => populateGlobal(document.getElementById('global-cases'), data))
     </script>
-
 </body>
 
 </html>
