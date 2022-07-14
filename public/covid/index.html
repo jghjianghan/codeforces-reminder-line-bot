@@ -89,6 +89,28 @@
                 min-width: 25em;
             }
         }
+
+        .loader {
+            margin: 1rem auto;
+            border: 0.35em solid #f3f3f3;
+            /* Light grey */
+            border-top: 0.35em solid #585858;
+            /* Blue */
+            border-radius: 50%;
+            width: 1.5em;
+            height: 1.5em;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -106,6 +128,7 @@
                 <th>新加坡</th>
             </tr>
         </table>
+        <div class="loader" id="spinner-ts"></div>
 
         <br />
         <h2>全球新增确诊</h2>
@@ -118,6 +141,7 @@
                 <th>死亡</th>
             </tr>
         </table>
+        <div class="loader" id="spinner-global"></div>
     </article>
     <br />
     <footer>
@@ -202,6 +226,7 @@
                     }
                     table.appendChild(row);
                 })
+            document.getElementById('spinner-ts').style.display = "none"
         }
 
         let tableNew = document.getElementById("new-cases");
@@ -235,6 +260,7 @@
 
                 table.appendChild(row)
             }
+            document.getElementById('spinner-global').style.display = "none"
         }
 
         fetch('https://disease.sh/v3/covid-19/countries?yesterday=true&twoDaysAgo=true&sort=todayCases')
