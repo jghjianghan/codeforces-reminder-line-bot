@@ -39,3 +39,9 @@ npm start
 
 # Sample Interaction
 ![CFBot-demo sideway](https://user-images.githubusercontent.com/47552445/152628815-e88fde91-6275-4457-add3-ced6159fdc7a.jpg)
+
+With rich menu:
+
+<img src="https://user-images.githubusercontent.com/47552445/188313273-8adff92a-ecd2-43ed-9594-3159f1062fa5.jpg" alt="rich-menu-screenshot" style="width:400px; display:block;"/>
+
+
